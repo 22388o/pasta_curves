@@ -9,6 +9,12 @@ use core::ops::{Add, Mul, Neg, Sub};
 #[cfg(feature = "alloc")]
 use alloc::boxed::Box;
 
+#[cfg(feature = "borsh")]
+use borsh::{BorshDeserialize, BorshSerialize};
+
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 use ff::{Field, PrimeField};
 use group::{
     cofactor::{CofactorCurve, CofactorGroup},
@@ -29,6 +35,8 @@ macro_rules! new_curve_impl {
      $curve_id:literal, $a_raw:expr, $b_raw:expr, $curve_type:ident) => {
         /// Represents a point in the projective coordinate space.
         #[derive(Copy, Clone, Debug)]
+        #[cfg_attr(feature = "borsh", derive(BorshSerialize, BorshDeserialize))]
+        #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
         $($privacy)* struct $name {
             x: $base,
             y: $base,
